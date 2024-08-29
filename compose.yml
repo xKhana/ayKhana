@@ -1,0 +1,49 @@
+services:
+  be-khana:
+    build: .
+    ports:
+      - target: 8080
+        published: 8080
+    depends_on:
+      - db-khana
+    networks:
+      - back-tier
+      - front-tier
+    environment:
+      POSTGRES_URL: 'jdbc:postgresql://db-khana:5432/db_khana'
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: postgres-password
+    secrets:
+      - postgres-user
+      - postgres-password
+
+  db-khana:
+    image: 'postgres:13-alpine3.20'
+    ports:
+      - target: 5432
+        published: 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - back-tier
+    environment:
+      POSTGRES_DB: 'db_khana'
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: postgres-password
+    secrets:
+      - postgres-user
+      - postgres-password
+
+volumes:
+  pgdata:
+
+networks:
+  front-tier:
+  back-tier:
+    internal: true
+
+secrets:
+  postgres-user:
+    file: ./secrets/POSTGRES_USER
+  postgres-password:
+    file: ./secrets/POSTGRES_PASSWORD
