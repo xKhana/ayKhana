@@ -10,12 +10,10 @@ services:
       - back-tier
       - front-tier
     environment:
-      POSTGRES_URL: 'jdbc:postgresql://db-khana:5432/db_khana'
-      POSTGRES_USER: postgres-user
-      POSTGRES_PASSWORD: postgres-password
+        - POSTGRES_URL=jdbc:postgresql://db-khana:5432/db_khana
     secrets:
-      - postgres-user
-      - postgres-password
+      - pg-user
+      - pg-password
 
   db-khana:
     image: 'postgres:13-alpine3.20'
@@ -27,12 +25,12 @@ services:
     networks:
       - back-tier
     environment:
-      POSTGRES_DB: 'db_khana'
-      POSTGRES_USER: postgres-user
-      POSTGRES_PASSWORD: postgres-password
+      - POSTGRES_DB=db_khana
+      - POSTGRES_USER_FILE=/run/secrets/pg-user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/pg-password
     secrets:
-      - postgres-user
-      - postgres-password
+      - pg-user
+      - pg-password
 
 volumes:
   pgdata:
@@ -40,10 +38,10 @@ volumes:
 networks:
   front-tier:
   back-tier:
-    internal: true
+#    internal: true # Enable in production
 
 secrets:
-  postgres-user:
-    file: ./secrets/POSTGRES_USER
-  postgres-password:
-    file: ./secrets/POSTGRES_PASSWORD
+  pg-user:
+    file: secrets/pg-user.txt
+  pg-password:
+    file: secrets/pg-password.txt
