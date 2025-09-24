@@ -38,5 +38,5 @@ public class Address {
 
   private String phone;
 
-  private enum Type {HOME, WORK, OTHER}
+  public enum Type {HOME, WORK, OTHER}
 }
