@@ -14,33 +14,33 @@ import java.time.Instant;
 @Data
 @Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @CreatedDate
-    private Instant createdDate;
+  @CreatedDate
+  private Instant createdDate;
 
-    private Long totalPrice;
+  private Long totalPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
+  @ManyToOne
+  @JoinColumn(name = "address_id", referencedColumnName = "id")
+  private Address address;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Customer customer;
+  @ManyToOne
+  @JoinColumn(name = "customer_id", referencedColumnName = "id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Customer customer;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    private PaymentMethod paymentMethod;
+  @Enumerated(EnumType.STRING)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private PaymentMethod paymentMethod;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    private Status status;
+  @Enumerated(EnumType.STRING)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private Status status;
 
-    public enum PaymentMethod { CASH, CARD, STRIPE }
+  public enum PaymentMethod {CASH, CARD, STRIPE}
 
-    public enum Status { ON_DELIVERY, SHIPPED, CANCELLED }
+  public enum Status {ON_DELIVERY, SHIPPED, CANCELLED}
 }

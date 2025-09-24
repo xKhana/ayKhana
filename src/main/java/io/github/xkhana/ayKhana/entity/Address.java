@@ -11,32 +11,32 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 @Data
 @Table(name = "addresses")
 public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    private Type type;
+  @Enumerated(EnumType.STRING)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  private Type type;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Customer customer;
+  @ManyToOne
+  @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Customer customer;
 
-    private String country;
+  private String country;
 
-    private String governorate;
+  private String governorate;
 
-    private String city;
+  private String city;
 
-    private String address;
+  private String address;
 
-    private String zipCode;
+  private String zipCode;
 
-    private String phone;
+  private String phone;
 
-    private enum Type { HOME, WORK, OTHER }
+  private enum Type {HOME, WORK, OTHER}
 }

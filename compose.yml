@@ -14,6 +14,8 @@ services:
     secrets:
       - pg-user
       - pg-password
+      - jwt-public-key
+      - jwt-private-key
 
   db-khana:
     image: 'postgres:13-alpine3.20'
@@ -45,3 +47,7 @@ secrets:
     file: secrets/pg-user.txt
   pg-password:
     file: secrets/pg-password.txt
+  jwt-public-key:
+    file: secrets/jwt-public-key.pem
+  jwt-private-key:
+    file: secrets/jwt-private-key.pem

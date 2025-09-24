@@ -16,22 +16,22 @@ import java.util.Map;
 @Data
 @Table(name = "items")
 public class Item {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @CreatedDate
-    private Instant createdDate;
+  @CreatedDate
+  private Instant createdDate;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference
-    private Product product;
+  @ManyToOne
+  @JoinColumn(name = "product_id", referencedColumnName = "id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  @JsonManagedReference
+  private Product product;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private Map<String, Object> properties;
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> properties;
 
-    private Integer stock;
+  private Integer stock;
 }

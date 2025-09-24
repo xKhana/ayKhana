@@ -15,27 +15,32 @@ import java.util.UUID;
 @Table(name = "customers")
 @EntityListeners(AuditingEntityListener.class)
 public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @CreatedDate
-    private Instant createdDate;
+  @CreatedDate
+  private Instant createdDate;
 
-    private String firstName;
+  private String firstName;
 
-    private String lastName;
+  private String lastName;
 
-    @Column(unique = true)
-    private String email;
+  @Column(unique = true)
+  private String email;
 
-    @Column(unique = true)
-    private String username;
+  @Column(unique = true)
+  private String username;
 
-    private String password;
+  private String password;
 
-    private String phone;
+  @Column(unique = true)
+  private String phone;
 
-     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-     private Set<Order> orders = new HashSet<>();
+  @OneToMany(
+      mappedBy = "customer",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
+  private Set<Order> orders = new HashSet<>();
 }
