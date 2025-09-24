@@ -32,7 +32,7 @@ public class Address {
 
   private String city;
 
-  private String address;
+  private String details;
 
   private String zipCode;
 
