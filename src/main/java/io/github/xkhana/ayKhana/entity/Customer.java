@@ -16,8 +16,8 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Customer {
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @CreatedDate
   private Instant createdDate;

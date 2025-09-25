@@ -14,8 +14,8 @@ import java.util.UUID;
 public class RefreshToken {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Column(unique = true, length = 1024)
   private String token;
