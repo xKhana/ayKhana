@@ -8,30 +8,30 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class CustomerRegistrationRequest {
+public class UserRegistrationRequest {
 
-  @NotBlank
+  @NotBlank(message = "SHOULD_NOT_BLANK")
   private String firstName;
 
-  @NotBlank
+  @NotBlank(message = "SHOULD_NOT_BLANK")
   private String lastName;
 
-  @NotBlank
-  @Pattern(regexp = "^[a-zA-Z0-9_-]{3,16}$")
+  @NotBlank(message = "SHOULD_NOT_BLANK")
+  @Pattern(regexp = "^[a-zA-Z0-9_-]{3,16}$", message = "INVALID_USERNAME")
   private String username;
 
-  @NotBlank
+  @NotBlank(message = "SHOULD_NOT_BLANK")
   @Email
   private String email;
 
-  @NotBlank
+  @NotBlank(message = "SHOULD_NOT_BLANK")
   @PhoneNumber
   private String phone;
 
-  @NotBlank
+  @NotBlank(message = "SHOULD_NOT_BLANK")
   @Password
   private String password;
 
-  @NotBlank
+  @NotBlank(message = "SHOULD_NOT_BLANK")
   private String passwordConfirmation;
 }

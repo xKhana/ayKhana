@@ -1,29 +1,29 @@
 package io.github.xkhana.ayKhana.security.model;
 
-import io.github.xkhana.ayKhana.entity.Customer;
+import io.github.xkhana.ayKhana.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @RequiredArgsConstructor
-public class SecurityCustomer implements UserDetails {
-  private final Customer customer;
+public class SecurityUser implements UserDetails {
+  private final User user;
 
   @Override
   public String getUsername() {
-    return customer.getUsername();
+    return user.getUsername();
   }
 
   @Override
   public String getPassword() {
-    return customer.getPassword();
+    return user.getPassword();
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return new ArrayList<>();
+    return Collections.singleton(new SecurityRole(user.getRole()));
   }
 }

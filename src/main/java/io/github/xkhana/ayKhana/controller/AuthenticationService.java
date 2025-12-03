@@ -1,9 +1,10 @@
 package io.github.xkhana.ayKhana.controller;
 
-import io.github.xkhana.ayKhana.model.request.CustomerRegistrationRequest;
-import io.github.xkhana.ayKhana.model.response.CustomerRegistrationResponse;
+import io.github.xkhana.ayKhana.model.request.UserRegistrationRequest;
+import io.github.xkhana.ayKhana.model.response.UserRegistrationResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Collection;
 
@@ -16,9 +17,9 @@ public interface AuthenticationService {
 
   String generateRefreshToken(String username, Collection<? extends GrantedAuthority> authorities);
 
-  boolean validateRefreshToken(Authentication authentication, String refreshToken);
+  Jwt validateRefreshToken(String refreshToken);
 
   boolean logout(Authentication authentication);
 
-  CustomerRegistrationResponse register(CustomerRegistrationRequest registrationDto);
+  UserRegistrationResponse register(UserRegistrationRequest registrationDto);
 }

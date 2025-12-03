@@ -30,8 +30,12 @@ public class Item {
   private Product product;
 
   @JdbcTypeCode(SqlTypes.JSON)
-  @Column(columnDefinition = "jsonb")
+  @Column(columnDefinition = "jsonb", nullable = true)
   private Map<String, Object> properties;
 
+  @Column(nullable = false)
   private Integer stock;
+
+  @Column(nullable = false)
+  private Long price;
 }

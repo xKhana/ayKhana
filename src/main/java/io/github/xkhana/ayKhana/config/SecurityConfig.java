@@ -4,14 +4,17 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import io.github.xkhana.ayKhana.security.handler.CustomAccessDeniedHandler;
-import io.github.xkhana.ayKhana.security.handler.CustomAuthenticationEntryPoint;
+import io.github.xkhana.ayKhana.repository.AddressRepository;
+import io.github.xkhana.ayKhana.repository.OrderRepository;
+import io.github.xkhana.ayKhana.security.authorization.OwnershipSecurityExpression;
+import io.github.xkhana.ayKhana.security.handler.UserAccessDeniedHandler;
+import io.github.xkhana.ayKhana.security.handler.UserAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,6 +26,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.io.ByteArrayInputStream;
@@ -31,11 +36,12 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-  private final CustomAccessDeniedHandler customAccessDeniedHandler;
+  private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
+  private final UserAccessDeniedHandler userAccessDeniedHandler;
 
   @Bean
   @Order(1)
@@ -44,8 +50,8 @@ public class SecurityConfig {
         .securityMatcher("/api/v1/auth/login")
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .httpBasic(basic -> basic.authenticationEntryPoint(customAuthenticationEntryPoint))
-        .exceptionHandling(ex -> ex.accessDeniedHandler(customAccessDeniedHandler)).authorizeHttpRequests(authorize -> authorize
+        .httpBasic(basic -> basic.authenticationEntryPoint(userAuthenticationEntryPoint))
+        .exceptionHandling(ex -> ex.accessDeniedHandler(userAccessDeniedHandler)).authorizeHttpRequests(authorize -> authorize
             .anyRequest().authenticated())
         .build();
   }
@@ -57,18 +63,29 @@ public class SecurityConfig {
         .securityMatcher("/api/**")
         .csrf(AbstractHttpConfigurer::disable)
         .oauth2ResourceServer(oauth2 -> oauth2
-            .jwt(Customizer.withDefaults())
-            .authenticationEntryPoint(customAuthenticationEntryPoint)).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+            .authenticationEntryPoint(userAuthenticationEntryPoint))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .logout(AbstractHttpConfigurer::disable)
         .exceptionHandling(ex -> ex
-            .authenticationEntryPoint(customAuthenticationEntryPoint)
-            .accessDeniedHandler(customAccessDeniedHandler))
+            .authenticationEntryPoint(userAuthenticationEntryPoint)
+            .accessDeniedHandler(userAccessDeniedHandler))
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(getOpenedResources()).permitAll()
-            .requestMatchers("/api/v1/auth/register").permitAll()
+            .requestMatchers("/api/v1/auth/register", "/api/v1/auth/token").permitAll()
             .anyRequest().authenticated())
         .build();
+  }
+
+  @Bean
+  public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("role");
+    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+
+    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    return jwtAuthenticationConverter;
   }
 
   @Bean
@@ -95,6 +112,16 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean("addressSE")
+  public OwnershipSecurityExpression<AddressRepository> addressSE(AddressRepository addressRepository) {
+    return new OwnershipSecurityExpression<>(addressRepository);
+  }
+
+  @Bean("orderSE")
+  public OwnershipSecurityExpression<OrderRepository> orderSE(OrderRepository orderRepository) {
+    return new OwnershipSecurityExpression<>(orderRepository);
   }
 
   private String[] getOpenedResources() {

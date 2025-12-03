@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 
 @Entity
 @Data
@@ -21,11 +19,11 @@ public class RefreshToken {
   private String token;
 
   @OneToOne()
-  @JoinColumn(name = "customer_id", referencedColumnName = "id")
-  private Customer customer;
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
+  private User user;
 
-  public RefreshToken(Customer customer, String token) {
-    this.customer = customer;
+  public RefreshToken(User user, String token) {
+    this.user = user;
     this.token = token;
   }
 

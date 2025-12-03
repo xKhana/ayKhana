@@ -14,7 +14,7 @@ import java.util.List;
 public class ApiResponse<T> {
   private boolean success;
   private T data;
-  private ErrorDetails errors;
+  private ErrorDetails error;
   private String timestamp;
 
 
@@ -43,13 +43,13 @@ public class ApiResponse<T> {
 
   public static <T> ApiResponse<T> validationError(List<ValidationError> errors) {
     ApiResponse<T> response = new ApiResponse<>(false);
-    response.setErrors(new ErrorDetails("VALIDATION_ERR", errors));
+    response.setError(new ErrorDetails("VALIDATION_ERR", errors));
     return response;
   }
 
   public static <T> ApiResponse<T> error(ErrorDetails error) {
     ApiResponse<T> response = new ApiResponse<>(false);
-    response.setErrors(error);
+    response.setError(error);
     return response;
   }
 

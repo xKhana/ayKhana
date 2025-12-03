@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,6 +24,20 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public ResponseEntity<ApiResponse<Object>> handleAuthorizationDeniedException(
+      AuthorizationDeniedException ex) {
+
+    log.warn("Authorization denied: {}", ex.getMessage());
+
+    ApiResponse<Object> response = ApiResponse.error(
+        "AUTHORIZATION_DENIED"
+    );
+
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -110,7 +125,9 @@ public class GlobalExceptionHandler {
 
     String code = "DATA_INTEGRITY_VIOLATION";
 
-    if (ex.getMessage().contains("email"))
+    if (ex.getMessage().contains("(phone)"))
+      code = "PHONE_NUMBER_ALREADY_EXISTS";
+    else if (ex.getMessage().contains("(email)"))
       code = "EMAIL_ALREADY_EXISTS";
 
     log.warn("Data integrity violation: {}", ex.getMessage());
@@ -128,7 +145,7 @@ public class GlobalExceptionHandler {
     ApiResponse<Object> response = ApiResponse.error(
         ex.getCode()
     );
-    return ResponseEntity.status(HttpStatus.valueOf(ex.getCode())).body(response);
+    return ResponseEntity.status(ex.getHttpStatus()).body(response);
   }
 
   @ExceptionHandler(AccountLockedException.class)

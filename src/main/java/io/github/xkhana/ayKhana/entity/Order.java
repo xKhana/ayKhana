@@ -13,7 +13,7 @@ import java.time.Instant;
 @Entity
 @Data
 @Table(name = "orders")
-public class Order {
+public class Order implements OwnableEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -21,6 +21,7 @@ public class Order {
   @CreatedDate
   private Instant createdDate;
 
+  @Column(nullable = false)
   private Long totalPrice;
 
   @ManyToOne
@@ -28,9 +29,9 @@ public class Order {
   private Address address;
 
   @ManyToOne
-  @JoinColumn(name = "customer_id", referencedColumnName = "id")
+  @JoinColumn(name = "user_id", referencedColumnName = "id")
   @OnDelete(action = OnDeleteAction.CASCADE)
-  private Customer customer;
+  private User user;
 
   @Enumerated(EnumType.STRING)
   @JdbcType(PostgreSQLEnumJdbcType.class)
@@ -39,6 +40,8 @@ public class Order {
   @Enumerated(EnumType.STRING)
   @JdbcType(PostgreSQLEnumJdbcType.class)
   private Status status;
+
+  private String note;
 
   public enum PaymentMethod {CASH, CARD, STRIPE}
 

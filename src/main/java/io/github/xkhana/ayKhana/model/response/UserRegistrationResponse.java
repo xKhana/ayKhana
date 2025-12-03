@@ -4,7 +4,7 @@ package io.github.xkhana.ayKhana.model.response;
 import lombok.Data;
 
 @Data
-public class CustomerRegistrationResponse {
+public class UserRegistrationResponse {
   private String firstName;
   private String lastName;
   private String username;

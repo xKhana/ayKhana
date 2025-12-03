@@ -1,7 +1,7 @@
-package io.github.xkhana.ayKhana.service;
+package io.github.xkhana.ayKhana.security.service;
 
-import io.github.xkhana.ayKhana.repository.CustomerRepository;
-import io.github.xkhana.ayKhana.security.model.SecurityCustomer;
+import io.github.xkhana.ayKhana.repository.UserRepository;
+import io.github.xkhana.ayKhana.security.model.SecurityUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerDetailsServiceImpl implements UserDetailsService {
-  private final CustomerRepository customerRepository;
+public class UserDetailsServiceImpl implements UserDetailsService {
+  private final UserRepository userRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return customerRepository.findByUsername(username).map(SecurityCustomer::new).orElseThrow(
+    return userRepository.findByUsername(username).map(SecurityUser::new).orElseThrow(
         () -> new UsernameNotFoundException("Invalid username or password.")
     );
   }
