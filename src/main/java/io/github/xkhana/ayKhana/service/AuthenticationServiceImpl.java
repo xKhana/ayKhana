@@ -8,8 +8,8 @@ import io.github.xkhana.ayKhana.model.request.CustomerRegistrationRequest;
 import io.github.xkhana.ayKhana.model.response.CustomerRegistrationResponse;
 import io.github.xkhana.ayKhana.repository.CustomerRepository;
 import io.github.xkhana.ayKhana.repository.RefreshTokenRepository;
+import io.github.xkhana.ayKhana.util.ModelMapperUtil;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -39,7 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final RefreshTokenRepository refreshTokenRepository;
   private final CustomerRepository customerRepository;
-  private final ModelMapper modelMapper;
+  private final ModelMapperUtil modelMapper;
 
   @Override
   @Transactional
