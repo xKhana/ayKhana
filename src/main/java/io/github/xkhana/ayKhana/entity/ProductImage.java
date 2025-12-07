@@ -9,11 +9,11 @@ import org.hibernate.annotations.OnDeleteAction;
 @Data
 @Table(name = "product_images")
 public class ProductImage {
-    @Id
-    private String url;
+  @Id
+  private String url;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Product product;
+  @ManyToOne
+  @JoinColumn(name = "product_id", referencedColumnName = "id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Product product;
 }

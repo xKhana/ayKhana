@@ -1,5 +1,6 @@
 package io.github.xkhana.ayKhana.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,18 +14,24 @@ import java.util.Set;
 @Data
 @Table(name = "categories")
 public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    @JsonManagedReference
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Category parent;
+  @Column(nullable = true)
+  private String imageUrl;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Category> children = new HashSet<>();
+  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "parent_id", referencedColumnName = "id")
+  @JsonManagedReference
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private Category parent;
+
+  @JsonManagedReference
+  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private Set<Category> children = new HashSet<>();
 }

@@ -6,37 +6,80 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 
 @Entity
 @Data
 @Table(name = "addresses")
-public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Address implements OwnableEntity {
+  private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(), 4326);
 
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    private Type type;
+  @Column(nullable = false)
+  private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Customer customer;
+  @Enumerated(EnumType.STRING)
+  @JdbcType(PostgreSQLEnumJdbcType.class)
+  @Column(nullable = false)
+  private Type type;
 
-    private String country;
+  @ManyToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private User user;
 
-    private String governorate;
+  @Column(nullable = false)
+  private String country;
 
-    private String city;
+  @Column(nullable = false)
+  private String governorate;
 
-    private String address;
+  @Column(nullable = false)
+  private String city;
 
-    private String zipCode;
+  @Column(nullable = false)
+  private String details;
 
-    private String phone;
+  @Column(nullable = false)
+  private String zipCode;
 
-    private enum Type { HOME, WORK, OTHER }
+  @Column(nullable = false)
+  private String phone;
+
+  @Column(columnDefinition = "geography(Point, 4326)", nullable = false)
+  private Point location;
+
+  @Transient
+  public Double getLongitude() {
+    return (location != null) ? location.getX() : 0.0;
+  }
+
+  @Transient
+  public Double getLatitude() {
+    return (location != null) ? location.getY() : 0.0;
+  }
+
+  @Transient
+  public void setLatitude(Double latitude) {
+    double currentLongitude = getLongitude();
+    this.location = GEOMETRY_FACTORY.createPoint(
+        new Coordinate(currentLongitude, latitude));
+  }
+
+  @Transient
+  public void setLongitude(Double longitude) {
+    double currentLatitude = getLatitude();
+    this.location = GEOMETRY_FACTORY.createPoint(
+        new Coordinate(longitude, currentLatitude));
+  }
+
+  public enum Type {
+    HOME, WORK, OTHER
+  }
 }
